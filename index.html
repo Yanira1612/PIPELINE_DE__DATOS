@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard de Canciones</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <h1>Dashboard de Canciones</h1>
+  <h2>Top 10 Canciones Más Escuchadas</h2>
+
+  <table id="top10-table">
+    <thead>
+      <tr>
+        <th>Título</th>
+        <th>Artista</th>
+        <th>Reproducciones</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div id="top10-chart"></div>
+
+  <script>
+    // Cargar el Top 10
+    fetch('/top10')
+      .then(res => res.json())
+      .then(top10 => {
+        const tbody = document.querySelector("#top10-table tbody");
+        const x = [];
+        const y = [];
+
+        top10.forEach(item => {
+          const row = `<tr>
+            <td>${item.title}</td>
+            <td>${item.artist}</td>
+            <td>${item.count}</td>
+          </tr>`;
+          tbody.innerHTML += row;
+
+          x.push(item.title);
+          y.push(item.count);
+        });
+const trace = {
+  x: x,
+  y: y,
+  type: 'bar',
+  marker: { color: ['#f3c623', '#c79cff', '#4cafef', '#ff7b7b', '#7bff85', '#f3c623', '#c79cff', '#4cafef', '#f3c623', '#c79cff', ] }
+};
+
+Plotly.newPlot('top10-chart', [trace], {
+  title: {
+    text: "Top 10 Canciones",
+    font: { size: 24, color: '#f3c623' }
+  },
+  paper_bgcolor: '#2c2c3c',
+  plot_bgcolor: '#1e1e2f',
+  font: { color: '#ffffff', family: 'Poppins, sans-serif' },
+  margin: { t: 60, l: 50, r: 20, b: 80 }
+});
+
+      });
+  </script>
+</body>
+</html>

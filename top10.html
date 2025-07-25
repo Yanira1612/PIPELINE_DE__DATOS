@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Top 10 Canciones Más Escuchadas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 50%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        th {
+            background: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎶 Top 10 Canciones Más Escuchadas</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Posición</th>
+                <th>Canción</th>
+                <th>Reproducciones</th>
+            </tr>
+        </thead>
+        <tbody id="top10-body">
+            <!-- Aquí se inyectan las filas dinámicamente -->
+        </tbody>
+    </table>
+
+    <script>
+        async function cargarTop10() {
+            try {
+                const response = await fetch('/top10');
+                const data = await response.json();
+                const tbody = document.getElementById('top10-body');
+                tbody.innerHTML = '';
+
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="3">No hay datos disponibles</td></tr>';
+                    return;
+                }
+
+                data.forEach((item, index) => {
+                    const row = `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${item.title}</td>
+                            <td>${item.plays}</td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error('Error al cargar el Top 10:', error);
+            }
+        }
+
+        cargarTop10();
+    </script>
+</body>
+</html>
